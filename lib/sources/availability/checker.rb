@@ -1,10 +1,5 @@
+require "sources/availability/checker/api_client"
+require "sources/availability/checker/query"
+require "sources/availability/checker/logging"
+require "sources/availability/checker/messaging"
 require "sources/availability/checker/version"
-
-module Sources
-  module Availability
-    module Checker
-      class Error < StandardError; end
-      # Your code goes here...
-    end
-  end
-end
