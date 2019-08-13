@@ -1,6 +1,9 @@
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+require "bundler/setup"
 
-RSpec::Core::RakeTask.new(:spec)
+begin
+  require "rspec/core/rake_task"
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError
+end
 
 task :default => :spec

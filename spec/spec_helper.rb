@@ -1,4 +1,5 @@
 require "bundler/setup"
+require "webmock/rspec"
 require "sources/availability/checker"
 
 RSpec.configure do |config|
