@@ -1,26 +1,6 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "sources/availability/checker"
+require "sources/monitor/availability_checker"
 
-module Sources
-  module Availability
-    module Checker
-      class Cli
-        include Logging
-
-        def run
-          log.info("Request Availability Checks for Sources")
-        end
-
-        private
-
-        def log
-          Rails.logger
-        end
-      end
-    end
-  end
-end
-
-Sources::Availability::Checker::Cli.new.run
+Sources::Monitor::AvailabilityChecker.new(ARGV.shift).check_sources

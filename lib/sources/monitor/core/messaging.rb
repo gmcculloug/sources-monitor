@@ -1,8 +1,8 @@
 module Sources
-  module Availability
-    module Checker
+  module Monitor
+    module Core
       module Messaging
-        def self.client
+        def client
           require "manageiq-messaging"
 
           @client ||= ManageIQ::Messaging::Client.open(

@@ -1,15 +1,17 @@
-# Sources::Availability::Checker
+# Sources::Monitor
 
-This Gem houses the Availability Check for the Sources. The Availability Checker is responsible
-for scheduling checks on both available and unavailable sources and requesting the checks
-to the appropriate operation workers via messaging.
+This Gem houses the monitoring tools for Sources, including:
+- Availability Check
+
+The Availability Checker is responsible for scheduling checks on both available and unavailable sources and
+requesting the checks to the appropriate operation workers via messaging.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sources-availability-checker'
+gem 'sources-monitor'
 ```
 
 And then execute:
@@ -18,7 +20,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sources-availability-checker
+    $ gem install sources-monitor
 
 ## Development
 
@@ -28,7 +30,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/abellotti/sources-availability-checker.
+Bug reports and pull requests are welcome on GitHub at https://github.com/abellotti/sources-monitor.
 
 ## License
 

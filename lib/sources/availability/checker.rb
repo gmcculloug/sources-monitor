@@ -1,5 +1,0 @@
-require "sources/availability/checker/api_client"
-require "sources/availability/checker/query"
-require "sources/availability/checker/logging"
-require "sources/availability/checker/messaging"
-require "sources/availability/checker/version"
