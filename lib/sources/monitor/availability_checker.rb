@@ -14,13 +14,10 @@ module Sources
       attr_accessor :source_state
 
       def initialize(source_state)
-        @source_state = source_state
+        raise "Must specify a Source state" if source_state.blank?
+        raise "Invalid Source state #{source_state} specified" unless SUPPORTED_STATES.include?(source_state)
 
-        unless SUPPORTED_STATES.include?(source_state)
-          err_message = "Invalid Source state #{source_state} specified"
-          logger.error(err_message)
-          raise(err_message)
-        end
+        @source_state = source_state
       end
 
       def check_sources
@@ -46,6 +43,9 @@ module Sources
           }
         end
         sources
+      rescue => e
+        logger.error("Failed to query #{source_state} Sources - #{e.message}")
+        []
       end
 
       def availability_status_matches(source, source_state)
@@ -72,6 +72,8 @@ module Sources
             }
           }
         )
+      rescue => e
+        logger.error("Failed to queue Source.availability_check for #{source[:type]} - #{e.message}")
       end
     end
   end
