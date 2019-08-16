@@ -8,5 +8,10 @@
 /spec/reports/
 /tmp/
 
+/.bundle/
+bundler.d/*
+/vendor/bundle
+/lib/bundler/man/
+
 # rspec failure tracking
 .rspec_status

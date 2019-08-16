@@ -1,3 +1,5 @@
+require "sources-api-client"
+
 module Sources
   module Monitor
     module Core
