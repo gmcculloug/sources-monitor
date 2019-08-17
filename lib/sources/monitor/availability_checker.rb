@@ -33,7 +33,7 @@ module Sources
         source_type_name = Hash[api_client.list_source_types.data.collect { |st| [st.id, st.name] }]
 
         sources = []
-        api_client.list_sources.data.each do |source|
+        api_client.list_sources(:limit => 1000).data.each do |source|
           next unless availability_status_matches(source, source_state)
 
           sources << {
