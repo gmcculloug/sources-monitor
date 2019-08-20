@@ -1,32 +1,23 @@
 # Sources::Monitor
 
-This Gem houses the monitoring tools for Sources, including:
+This Project houses the monitoring tools for Sources, including:
 - Availability Check
 
 The Availability Checker is responsible for scheduling checks on both available and unavailable sources and
 requesting the checks to the appropriate operation workers via messaging.
 
-## Installation
+## Running
 
-Add this line to your application's Gemfile:
+First clone the project and run bundle,
 
-```ruby
-gem 'sources-monitor'
-```
-
-And then execute:
+    $ git clone git@github.com:abellotti/sources-monitor.git
 
     $ bundle
 
-Or install it yourself as:
+Run availability checker:
 
-    $ gem install sources-monitor
+    $ bin/availability_checker [available | unavailable]
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
@@ -34,4 +25,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/abello
 
 ## License
 
-This gem is available as open source under the terms of the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+This project is available as open source under the terms of the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
