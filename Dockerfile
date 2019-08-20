@@ -21,6 +21,9 @@ RUN echo "gem: --no-document" > ~/.gemrc && \
     rm -rvf /root/.bundle/cache
 
 COPY . $WORKDIR
+COPY docker-assets/run_monitor /usr/bin
 
 RUN chgrp -R 0 $WORKDIR && \
     chmod -R g=u $WORKDIR
+
+ENTRYPOINT ["run_monitor"]
