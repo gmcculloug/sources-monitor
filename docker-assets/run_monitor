@@ -1,7 +1,0 @@
-#!/bin/bash
-
-echo "Sources Monitor Started ..."
-umask 022
-> /tmp/sources_monitor_started
-
-while true; do sleep 60; done
