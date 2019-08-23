@@ -89,7 +89,7 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/source_types")
         .with(:headers => headers)
         .to_return(:status => 200, :body => source_types_response, :headers => {})
-      stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/sources?limit=1000")
+      stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/sources?limit=1000&offset=0")
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
 
@@ -105,7 +105,7 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/source_types")
         .with(:headers => headers)
         .to_return(:status => 200, :body => source_types_response, :headers => {})
-      stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/sources?limit=1000")
+      stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/sources?limit=1000&offset=0")
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
 

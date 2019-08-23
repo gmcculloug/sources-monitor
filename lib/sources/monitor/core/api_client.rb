@@ -17,6 +17,24 @@ module Sources
         def identity
           @identity ||= { "x-rh-identity" => Base64.encode64({ "identity" => { "account_number" => ORCHESTRATOR_TENANT }}.to_json) }
         end
+
+        PAGED_SIZE = 1000
+        def paged_query(client, list_method)
+          result_collection = []
+          offset = 0
+
+          loop do
+            result = client.public_send(list_method, :offset => offset, :limit => PAGED_SIZE)
+            break unless result.data
+
+            result_collection << result.data
+            break if result.data.length < PAGED_SIZE
+
+            offset += PAGED_SIZE
+          end
+
+          result_collection.flatten
+        end
       end
     end
   end
