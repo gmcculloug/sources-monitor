@@ -1,7 +1,7 @@
 # Sources::Monitor
 
 This Project houses the monitoring tools for Sources, including:
-- Availability Check
+- Availability Checker
 
 The Availability Checker is responsible for scheduling checks on both available and unavailable sources and
 requesting the checks to the appropriate operation workers via messaging.
@@ -10,7 +10,7 @@ requesting the checks to the appropriate operation workers via messaging.
 
 First clone the project and run bundle,
 
-    $ git clone git@github.com:abellotti/sources-monitor.git
+    $ git clone git@github.com:ManageIQ/sources-monitor.git
 
     $ bundle
 
@@ -21,7 +21,7 @@ Run availability checker:
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/abellotti/sources-monitor.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ManageIQ/sources-monitor.
 
 ## License
 
