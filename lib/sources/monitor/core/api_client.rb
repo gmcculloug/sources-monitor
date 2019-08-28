@@ -27,13 +27,13 @@ module Sources
             result = client.public_send(list_method, :offset => offset, :limit => PAGED_SIZE)
             break unless result.data
 
-            result_collection << result.data
+            result_collection += result.data
             break if result.data.length < PAGED_SIZE
 
             offset += PAGED_SIZE
           end
 
-          result_collection.flatten
+          result_collection
         end
       end
     end
