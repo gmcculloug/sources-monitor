@@ -6,7 +6,7 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
   describe "Source.availability_check" do
     let(:orchestrator_tenant) { "system_orchestrator" }
     let(:identity) do
-      { "x-rh-identity" => Base64.encode64(
+      { "x-rh-identity" => Base64.strict_encode64(
         { "identity" => { "account_number" => orchestrator_tenant } }.to_json
       )}
     end

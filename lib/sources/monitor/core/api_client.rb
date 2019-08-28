@@ -15,7 +15,7 @@ module Sources
         end
 
         def identity
-          @identity ||= { "x-rh-identity" => Base64.encode64({ "identity" => { "account_number" => ORCHESTRATOR_TENANT }}.to_json) }
+          @identity ||= { "x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => ORCHESTRATOR_TENANT }}.to_json) }
         end
 
         PAGED_SIZE = 1000
