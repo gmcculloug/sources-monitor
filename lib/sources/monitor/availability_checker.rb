@@ -22,14 +22,14 @@ module Sources
 
       def check_sources
         logger.info("AvailabilityChecker started for #{source_state} Sources")
-        fetch_sources(source_state).each do |source|
+        fetch_sources.each do |source|
           request_availability_check(source)
         end
       end
 
       private
 
-      def fetch_sources(source_state)
+      def fetch_sources
         source_type_name = Hash[api_client.list_source_types.data.collect { |st| [st.id, st.name] }]
 
         sources = []
@@ -67,7 +67,6 @@ module Sources
           :payload => {
             :params => {
               :source_id       => source[:id],
-              :timestamp       => Time.now.utc,
               :external_tenant => source[:tenant]
             }
           }
