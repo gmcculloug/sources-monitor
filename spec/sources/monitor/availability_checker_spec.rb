@@ -16,6 +16,10 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
     let(:openshift_topic)   { "platform.topological-inventory.operations-openshift" }
     let(:amazon_topic)      { "platform.topological-inventory.operations-amazon" }
 
+    let(:tenants_response) do
+      [{"external_tenant" => orchestrator_tenant}].to_json
+    end
+
     let(:source_types_response) do
       {
         "data" => [
@@ -86,6 +90,9 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
     end
 
     it "sends a request for an available source to the appropriate queue" do
+      stub_request(:get, "https://cloud.redhat.com/internal/v1.0/tenants")
+        .with(:headers => headers)
+        .to_return(:status => 200, :body => tenants_response, :headers => {})
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/source_types")
         .with(:headers => headers)
         .to_return(:status => 200, :body => source_types_response, :headers => {})
@@ -102,6 +109,9 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
     end
 
     it "sends a request for an unavailable source to the appropriate queue" do
+      stub_request(:get, "https://cloud.redhat.com/internal/v1.0/tenants")
+        .with(:headers => headers)
+        .to_return(:status => 200, :body => tenants_response, :headers => {})
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/source_types")
         .with(:headers => headers)
         .to_return(:status => 200, :body => source_types_response, :headers => {})

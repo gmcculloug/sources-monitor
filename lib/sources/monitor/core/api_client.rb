@@ -15,8 +15,9 @@ module Sources
         end
 
         def internal_api_get(collection)
-          url = "#{ENV["SOURCES_SCHEME"] || "http"}://#{ENV["SOURCES_HOST"]}:#{ENV["SOURCES_PORT"]}"
-          JSON.parse(::RestClient.get("#{url}/internal/v1.0/#{collection}", identity(ORCHESTRATOR_TENANT)))
+          url = "#{SourcesApiClient.configure.scheme}://#{SourcesApiClient.configure.host}"
+          JSON.parse(::RestClient.get("#{url}/internal/v1.0/#{collection}",
+                                      identity(ORCHESTRATOR_TENANT).merge("Content-Type" => "application/json")))
         rescue ::RestClient::NotFound
           []
         end
