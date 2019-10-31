@@ -1,3 +1,4 @@
+require "rest-client"
 require "sources-api-client"
 
 module Sources
@@ -6,16 +7,22 @@ module Sources
       module ApiClient
         ORCHESTRATOR_TENANT = "system_orchestrator".freeze
 
-        def api_client
-          @api_client ||= begin
-            api_client = SourcesApiClient::ApiClient.new
-            api_client.default_headers.merge!(identity)
-            SourcesApiClient::DefaultApi.new(api_client)
-          end
+        def api_client(external_tenant = ORCHESTRATOR_TENANT)
+          @sources_api_client ||= SourcesApiClient::ApiClient.new
+          @api_client         ||= SourcesApiClient::DefaultApi.new(@sources_api_client)
+          @sources_api_client.default_headers.merge!(identity(external_tenant))
+          @api_client
         end
 
-        def identity
-          @identity ||= { "x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => ORCHESTRATOR_TENANT }}.to_json) }
+        def internal_api_get(collection)
+          url = "#{ENV["SOURCES_SCHEME"] || "http"}://#{ENV["SOURCES_HOST"]}:#{ENV["SOURCES_PORT"]}"
+          JSON.parse(::RestClient.get("#{url}/internal/v1.0/#{collection}", identity(ORCHESTRATOR_TENANT)))
+        rescue ::RestClient::NotFound
+          []
+        end
+
+        def identity(external_tenant)
+          { "x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => external_tenant }}.to_json) }
         end
 
         PAGED_SIZE = 1000
