@@ -33,16 +33,18 @@ module Sources
         source_type_name = Hash[api_client.list_source_types.data.collect { |st| [st.id, st.name] }]
 
         sources = []
-        paged_query(api_client, :list_sources).each do |source|
-          next unless availability_status_matches(source, source_state)
+        internal_api_get(:tenants).each do |tenant|
+          paged_query(api_client(tenant["external_tenant"]), :list_sources).each do |source|
+            next unless availability_status_matches(source, source_state)
 
-          sources << {
-            :id     => source.id.to_s,
-            :tenant => source.tenant,
-            :type   => source_type_name[source.source_type_id]
-          }
+            sources << {
+              :id     => source.id.to_s,
+              :tenant => source.tenant,
+              :type   => source_type_name[source.source_type_id]
+            }
+          end
         end
-        sources
+        sources.uniq
       rescue => e
         logger.error("Failed to query #{source_state} Sources - #{e.message}")
         []
