@@ -10,7 +10,7 @@ requesting the checks to the appropriate operation workers via messaging.
 
 First clone the project and run bundle,
 
-    $ git clone git@github.com:ManageIQ/sources-monitor.git
+    $ git clone git@github.com:RedHatInsights/sources-monitor.git
 
     $ bundle
 
@@ -21,7 +21,7 @@ Run availability checker:
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ManageIQ/sources-monitor.
+Bug reports and pull requests are welcome on GitHub at https://github.com/RedHatInsights/sources-monitor.
 
 ## License
 
