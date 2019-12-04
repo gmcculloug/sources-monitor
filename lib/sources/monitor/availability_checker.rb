@@ -63,18 +63,12 @@ module Sources
             "external_tenant" => source[:tenant]
           }}]")
 
-        messaging_client.publish_topic(
-          :service => "platform.topological-inventory.operations-#{source[:type]}",
-          :event   => "Source.availability_check",
-          :payload => {
-            :params => {
-              :source_id       => source[:id],
-              :external_tenant => source[:tenant]
-            }
-          }
-        )
+        api_client.check_availability_source(source[:id])
+      rescue SourcesApiClient::ApiError => e
+        error_message = JSON.parse(e.response_body)["errors"].first["detail"]
+        logger.error("Failed to request Source.availability_check for #{source[:type]} - #{error_message}")
       rescue => e
-        logger.error("Failed to queue Source.availability_check for #{source[:type]} - #{e.message}")
+        logger.error("Failed to request Source.availability_check for #{source[:type]} - #{e.message}")
       end
     end
   end
