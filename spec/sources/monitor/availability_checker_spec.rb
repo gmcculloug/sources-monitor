@@ -114,6 +114,12 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
         .to_return(:status => 202, :body => "", :headers => {})
 
       instance.check_sources
+
+      assert_requested(:post,
+                       "https://cloud.redhat.com/api/sources/v1.0/sources/#{available_source["id"]}/check_availability",
+                       :headers => headers.merge(instance.identity(available_source["tenant"])),
+                       :body    => "",
+                       :times   => 1)
     end
 
     it "sends a request for an unavailable source to the sources api" do
@@ -133,6 +139,12 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
         .to_return(:status => 202, :body => "", :headers => {})
 
       instance.check_sources
+
+      assert_requested(:post,
+                       "https://cloud.redhat.com/api/sources/v1.0/sources/#{unavailable_source["id"]}/check_availability",
+                       :headers => headers.merge(instance.identity(unavailable_source["tenant"])),
+                       :body    => "",
+                       :times   => 1)
     end
   end
 end
