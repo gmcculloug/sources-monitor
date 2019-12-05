@@ -98,6 +98,8 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
     end
 
     it "sends a request for an available source to the sources api" do
+      instance = described_class.new("available")
+
       stub_request(:get, "https://cloud.redhat.com/internal/v1.0/tenants")
         .with(:headers => headers)
         .to_return(:status => 200, :body => tenants_response, :headers => {})
@@ -108,13 +110,15 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
       stub_request(:post, "https://cloud.redhat.com/api/sources/v1.0/sources/#{available_source["id"]}/check_availability")
-        .with(:headers => headers.merge("x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => available_source["tenant"] } }.to_json)))
-        .to_return(:status => 202, :body => available_source.to_json, :headers => {})
+        .with(:headers => headers.merge(instance.identity(available_source["tenant"])))
+        .to_return(:status => 202, :body => "", :headers => {})
 
-      described_class.new("available").check_sources
+      instance.check_sources
     end
 
     it "sends a request for an unavailable source to the sources api" do
+      instance = described_class.new("unavailable")
+
       stub_request(:get, "https://cloud.redhat.com/internal/v1.0/tenants")
         .with(:headers => headers)
         .to_return(:status => 200, :body => tenants_response, :headers => {})
@@ -125,10 +129,10 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
       stub_request(:post, "https://cloud.redhat.com/api/sources/v1.0/sources/#{unavailable_source["id"]}/check_availability")
-        .with(:headers => headers.merge("x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => unavailable_source["tenant"] } }.to_json)))
-        .to_return(:status => 202, :body => unavailable_source.to_json, :headers => {})
+        .with(:headers => headers.merge(instance.identity(unavailable_source["tenant"])))
+        .to_return(:status => 202, :body => "", :headers => {})
 
-      described_class.new("unavailable").check_sources
+      instance.check_sources
     end
   end
 end
