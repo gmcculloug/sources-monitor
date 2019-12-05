@@ -108,7 +108,7 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
       stub_request(:post, "https://cloud.redhat.com/api/sources/v1.0/sources/#{available_source["id"]}/check_availability")
-        .with(:headers => headers)
+        .with(:headers => headers.merge("x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => available_source["tenant"] } }.to_json)))
         .to_return(:status => 202, :body => available_source.to_json, :headers => {})
 
       described_class.new("available").check_sources
@@ -125,7 +125,7 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
       stub_request(:post, "https://cloud.redhat.com/api/sources/v1.0/sources/#{unavailable_source["id"]}/check_availability")
-        .with(:headers => headers)
+        .with(:headers => headers.merge("x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => unavailable_source["tenant"] } }.to_json)))
         .to_return(:status => 202, :body => unavailable_source.to_json, :headers => {})
 
       described_class.new("unavailable").check_sources
