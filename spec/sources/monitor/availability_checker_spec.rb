@@ -16,6 +16,10 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
     let(:openshift_topic)   { "platform.topological-inventory.operations-openshift" }
     let(:amazon_topic)      { "platform.topological-inventory.operations-amazon" }
 
+    let(:tenants_response) do
+      [{"external_tenant" => orchestrator_tenant}].to_json
+    end
+
     let(:source_types_response) do
       {
         "data" => [
@@ -35,21 +39,29 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
       }.to_json
     end
 
+    let(:available_source) do
+      {
+        "id"                  => "11",
+        "source_type_id"      => "1",
+        "tenant"              => "10001",
+        "availability_status" => "available"
+      }
+    end
+
+    let(:unavailable_source) do
+      {
+        "id"                  => "12",
+        "source_type_id"      => "2",
+        "tenant"              => "10002",
+        "availability_status" => "unavailable"
+      }
+    end
+
     let(:sources_response) do
       {
         "data" => [
-          {
-            "id"                  => "11",
-            "source_type_id"      => "1",
-            "tenant"              => "10001",
-            "availability_status" => "available"
-          },
-          {
-            "id"                  => "12",
-            "source_type_id"      => "2",
-            "tenant"              => "10002",
-            "availability_status" => "unavailable"
-          }
+          available_source,
+          unavailable_source
         ]
       }.to_json
     end
@@ -85,36 +97,54 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
       expect { described_class.new("bogus_state").to raise_error("Invalid Source state bogus_state specified") }
     end
 
-    it "sends a request for an available source to the appropriate queue" do
+    it "sends a request for an available source to the sources api" do
+      instance = described_class.new("available")
+
+      stub_request(:get, "https://cloud.redhat.com/internal/v1.0/tenants")
+        .with(:headers => headers)
+        .to_return(:status => 200, :body => tenants_response, :headers => {})
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/source_types")
         .with(:headers => headers)
         .to_return(:status => 200, :body => source_types_response, :headers => {})
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/sources?limit=1000&offset=0")
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
+      stub_request(:post, "https://cloud.redhat.com/api/sources/v1.0/sources/#{available_source["id"]}/check_availability")
+        .with(:headers => headers.merge(instance.identity(available_source["tenant"])))
+        .to_return(:status => 202, :body => "", :headers => {})
 
-      expect(messaging_client).to receive(:publish_topic)
-        .with(hash_including(:service => openshift_topic,
-                             :event   => "Source.availability_check",
-                             :payload => a_hash_including(openshift_payload)))
+      instance.check_sources
 
-      described_class.new("available").check_sources
+      assert_requested(:post,
+                       "https://cloud.redhat.com/api/sources/v1.0/sources/#{available_source["id"]}/check_availability",
+                       :headers => headers.merge(instance.identity(available_source["tenant"])),
+                       :body    => "",
+                       :times   => 1)
     end
 
-    it "sends a request for an unavailable source to the appropriate queue" do
+    it "sends a request for an unavailable source to the sources api" do
+      instance = described_class.new("unavailable")
+
+      stub_request(:get, "https://cloud.redhat.com/internal/v1.0/tenants")
+        .with(:headers => headers)
+        .to_return(:status => 200, :body => tenants_response, :headers => {})
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/source_types")
         .with(:headers => headers)
         .to_return(:status => 200, :body => source_types_response, :headers => {})
       stub_request(:get, "https://cloud.redhat.com/api/sources/v1.0/sources?limit=1000&offset=0")
         .with(:headers => headers)
         .to_return(:status => 200, :body => sources_response, :headers => {})
+      stub_request(:post, "https://cloud.redhat.com/api/sources/v1.0/sources/#{unavailable_source["id"]}/check_availability")
+        .with(:headers => headers.merge(instance.identity(unavailable_source["tenant"])))
+        .to_return(:status => 202, :body => "", :headers => {})
 
-      expect(messaging_client).to receive(:publish_topic)
-        .with(hash_including(:service => amazon_topic,
-                             :event   => "Source.availability_check",
-                             :payload => a_hash_including(amazon_payload)))
+      instance.check_sources
 
-      described_class.new("unavailable").check_sources
+      assert_requested(:post,
+                       "https://cloud.redhat.com/api/sources/v1.0/sources/#{unavailable_source["id"]}/check_availability",
+                       :headers => headers.merge(instance.identity(unavailable_source["tenant"])),
+                       :body    => "",
+                       :times   => 1)
     end
   end
 end

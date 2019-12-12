@@ -10,6 +10,7 @@ gem "manageiq-loggers", "~> 0.3.0"
 gem "manageiq-messaging", "~> 0.1.2"
 gem "optimist"
 gem "rake"
+gem "rest-client", "~>2.0"
 gem "sources-api-client", :git => "https://github.com/ManageIQ/sources-api-client-ruby", :branch => "master"
 
 group :test do

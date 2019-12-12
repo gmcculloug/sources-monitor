@@ -33,16 +33,18 @@ module Sources
         source_type_name = Hash[api_client.list_source_types.data.collect { |st| [st.id, st.name] }]
 
         sources = []
-        paged_query(api_client, :list_sources).each do |source|
-          next unless availability_status_matches(source, source_state)
+        internal_api_get(:tenants).each do |tenant|
+          paged_query(api_client(tenant["external_tenant"]), :list_sources).each do |source|
+            next unless availability_status_matches(source, source_state)
 
-          sources << {
-            :id     => source.id.to_s,
-            :tenant => source.tenant,
-            :type   => source_type_name[source.source_type_id]
-          }
+            sources << {
+              :id     => source.id.to_s,
+              :tenant => source.tenant,
+              :type   => source_type_name[source.source_type_id]
+            }
+          end
         end
-        sources
+        sources.uniq
       rescue => e
         logger.error("Failed to query #{source_state} Sources - #{e.message}")
         []
@@ -61,18 +63,12 @@ module Sources
             "external_tenant" => source[:tenant]
           }}]")
 
-        messaging_client.publish_topic(
-          :service => "platform.topological-inventory.operations-#{source[:type]}",
-          :event   => "Source.availability_check",
-          :payload => {
-            :params => {
-              :source_id       => source[:id],
-              :external_tenant => source[:tenant]
-            }
-          }
-        )
+        api_client(source[:tenant]).check_availability_source(source[:id])
+      rescue SourcesApiClient::ApiError => e
+        error_message = JSON.parse(e.response_body)["errors"].first["detail"]
+        logger.error("Failed to request availability_check for Source id: #{source[:id]} type: #{source[:type]} tenant: #{source[:tenant]} - #{error_message}")
       rescue => e
-        logger.error("Failed to queue Source.availability_check for #{source[:type]} - #{e.message}")
+        logger.error("Failed to request availability_check for Source id: #{source[:id]} type: #{source[:type]} tenant: #{source[:tenant]} - #{e.message}")
       end
     end
   end
