@@ -23,7 +23,7 @@ module Sources
         end
 
         def identity(external_tenant)
-          { "x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => external_tenant }}.to_json) }
+          { "x-rh-identity" => Base64.strict_encode64({ "identity" => { "account_number" => external_tenant, "user" => { "is_org_admin" => true }}}.to_json) }
         end
 
         PAGED_SIZE = 1000
