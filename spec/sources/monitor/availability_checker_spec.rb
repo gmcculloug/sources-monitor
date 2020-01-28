@@ -7,7 +7,7 @@ RSpec.describe(Sources::Monitor::AvailabilityChecker) do
     let(:orchestrator_tenant) { "system_orchestrator" }
     let(:identity) do
       { "x-rh-identity" => Base64.strict_encode64(
-        { "identity" => { "account_number" => orchestrator_tenant } }.to_json
+        { "identity" => { "account_number" => orchestrator_tenant, "user" => { "is_org_admin" => true } } }.to_json
       )}
     end
     let(:headers) { {"Content-Type" => "application/json"}.merge(identity) }
