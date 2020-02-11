@@ -11,7 +11,7 @@ gem "manageiq-messaging", "~> 0.1.2"
 gem "optimist"
 gem "rake"
 gem "rest-client", "~>2.0"
-gem "sources-api-client", :git => "https://github.com/ManageIQ/sources-api-client-ruby", :branch => "master"
+gem "sources-api-client", "~> 1.0"
 
 group :test do
   gem "rspec"
