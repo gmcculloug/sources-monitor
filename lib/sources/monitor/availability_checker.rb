@@ -46,7 +46,7 @@ module Sources
         end
         sources.uniq
       rescue => e
-        logger.error("Failed to query #{source_state} Sources - #{e.message}")
+        logger.error("Source#availability_check - Failed to query #{source_state} Sources - #{e.message}")
         []
       end
 
@@ -56,19 +56,22 @@ module Sources
       end
 
       def request_availability_check(source)
-        logger.info("Requesting Source.availability_check [#{
-          {
-            "source_type"     => source[:type],
-            "source_id"       => source[:id],
-            "external_tenant" => source[:tenant]
-          }}]")
+        logger.info("Requesting Source#availability_check [#{source_log_hash}]")
 
         api_client(source[:tenant]).check_availability_source(source[:id])
       rescue SourcesApiClient::ApiError => e
         error_message = JSON.parse(e.response_body)["errors"].first["detail"]
-        logger.error("Failed to request availability_check for Source id: #{source[:id]} type: #{source[:type]} tenant: #{source[:tenant]} - #{error_message}")
+        logger.error("Failed to request Source#availability_check [#{source_log_hash}] - #{error_message}")
       rescue => e
-        logger.error("Failed to request availability_check for Source id: #{source[:id]} type: #{source[:type]} tenant: #{source[:tenant]} - #{e.message}")
+        logger.error("Failed to request Source#availability_check [#{source_log_hash}] - #{e.message}")
+      end
+
+      def source_log_hash
+        {
+          "source_type"     => source[:type],
+          "source_id"       => source[:id],
+          "external_tenant" => source[:tenant]
+        }
       end
     end
   end
