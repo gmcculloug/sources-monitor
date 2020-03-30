@@ -56,17 +56,17 @@ module Sources
       end
 
       def request_availability_check(source)
-        logger.info("Requesting Source#availability_check [#{source_log_hash}]")
+        logger.info("Requesting Source#availability_check [#{source_log_hash(source)}]")
 
         api_client(source[:tenant]).check_availability_source(source[:id])
       rescue SourcesApiClient::ApiError => e
         error_message = JSON.parse(e.response_body)["errors"].first["detail"]
-        logger.error("Failed to request Source#availability_check [#{source_log_hash}] - #{error_message}")
+        logger.error("Failed to request Source#availability_check [#{source_log_hash(source)}] - #{error_message}")
       rescue => e
-        logger.error("Failed to request Source#availability_check [#{source_log_hash}] - #{e.message}")
+        logger.error("Failed to request Source#availability_check [#{source_log_hash(source)}] - #{e.message}")
       end
 
-      def source_log_hash
+      def source_log_hash(source)
         {
           "source_type"     => source[:type],
           "source_id"       => source[:id],
