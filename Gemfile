@@ -9,7 +9,7 @@ gem "cloudwatchlogger",   "~> 0.2"
 gem "manageiq-loggers",   "~> 0.4.2"
 gem "manageiq-messaging", "~> 0.1.2"
 gem "optimist"
-gem "rake"
+gem "rake",               "~> 13.0.0"
 gem "rest-client",        "~>2.0"
 gem "sources-api-client", "~> 1.0"
 
