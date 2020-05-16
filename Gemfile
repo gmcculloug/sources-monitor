@@ -15,6 +15,6 @@ gem "sources-api-client", "~> 1.0"
 
 group :test do
   gem "rspec"
-  gem "simplecov"
+  gem 'simplecov', '~> 0.17.1'
   gem "webmock"
 end
